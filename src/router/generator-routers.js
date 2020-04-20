@@ -38,7 +38,7 @@ const rootRouter = {
   name: 'index',
   path: '',
   component: 'BasicLayout',
-  redirect: '/dashboard',
+  redirect: '/disk',
   meta: {
     title: '首页'
   },

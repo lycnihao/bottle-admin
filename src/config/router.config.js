@@ -9,10 +9,10 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/disk',
+    redirect: '/admin/disk',
     children: [
       {
-        path: '/disk',
+        path: '/admin/disk',
         name: 'FileList',
         component: () => import('@/views/file/FileList'),
         meta: { title: '文件', keepAlive: true, icon: bxAnaalyse }
@@ -30,25 +30,25 @@ export const asyncRouterMap = [
  */
 export const constantRouterMap = [
   {
-    path: '/user',
+    path: '/admin',
     component: UserLayout,
-    redirect: '/user/login',
+    redirect: '/admin/login',
     hidden: true,
     children: [
       {
         path: 'login',
         name: 'login',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login')
+        component: () => import('@/views/user/Login')
       },
       {
         path: 'register',
         name: 'register',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register')
+        component: () => import('@/views/user/Register')
       },
       {
         path: 'register-result',
         name: 'registerResult',
-        component: () => import(/* webpackChunkName: "user" */ '@/views/user/RegisterResult')
+        component: () => import('@/views/user/RegisterResult')
       },
       {
         path: 'recover',
@@ -57,28 +57,15 @@ export const constantRouterMap = [
       }
     ]
   },
-
-  {
-    path: '/test',
-    component: BlankLayout,
-    redirect: '/test/home',
-    children: [
-      {
-        path: 'home',
-        name: 'TestHome',
-        component: () => import('@/views/HelloWorld')
-      }
-    ]
-  },
 	{
 	  path: '/install',
 		name: 'installation',
-	  component: () => import(/* webpackChunkName: "fail" */ '@/views/system/Installation')
+	  component: () => import('@/views/system/Installation')
 	},
 
   {
     path: '/404',
-    component: () => import(/* webpackChunkName: "fail" */ '@/views/exception/404')
+    component: () => import('@/views/exception/404')
   }
 
 ]

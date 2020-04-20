@@ -1,6 +1,6 @@
 import { axios } from '@/utils/request'
 
-const baseUrl = '/admin'
+const baseUrl = '/api/admin'
 
 const adminApi = {}
 

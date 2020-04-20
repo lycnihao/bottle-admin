@@ -2,7 +2,7 @@ import { axios } from '@/utils/request'
 
 const bottleUrl = 'http://localhost:8080/'
 
-const baseUrl = bottleUrl + '/fileManager'
+const baseUrl = bottleUrl + 'api/admin/fileManager'
 
 const fileManagerApi = {}
 
