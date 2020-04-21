@@ -42,7 +42,7 @@ export default {
   fixSiderbar: false,
   autoHideHeader: false,
   storageOptions: {
-    namespace: 'couldr__',
+    namespace: 'bottle__',
     name: 'ls',
     storage: 'local'
   }

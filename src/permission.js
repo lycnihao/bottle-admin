@@ -11,7 +11,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['login', 'register', 'registerResult',	'installation'] // no redirect whitelist
-const defaultRoutePath = '/disk'
+const defaultRoutePath = '/admin/disk'
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
@@ -67,9 +67,9 @@ router.beforeEach((to, from, next) => {
 							}]
 						}
 						result.permissions = []
-						console.log(result)
 						const roles = result && result.role
             store.dispatch('GenerateRoutes', { roles }).then(() => {
+							console.log(store.getters.addRouters)
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               router.addRoutes(store.getters.addRouters)
@@ -90,7 +90,7 @@ router.beforeEach((to, from, next) => {
               description: '请求用户信息失败，请重试'
             })
             store.dispatch('Logout').then(() => {
-              next({ path: '/admin/login', query: { redirect: to.fullPath } })
+              next({ path: '/admin', query: { redirect: to.fullPath } })
             })
           })
       } else {
@@ -102,7 +102,7 @@ router.beforeEach((to, from, next) => {
       // 在免登录白名单，直接进入
       next()
     } else {
-      next({ path: '/admin/login', query: { redirect: to.fullPath } })
+      next({ path: '/admin', query: { redirect: to.fullPath } })
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }
   }
