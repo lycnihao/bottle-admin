@@ -15,7 +15,7 @@
     </div>
 		
 		<div class="table-operator operator file-operator">
-			<div v-if="selectedRow.length > 0">
+			<div>
 				<a-dropdown>
 				  <a-menu slot="overlay" @click="handleMenuClick">
 					<a-menu-item key="1">上传文件</a-menu-item>
@@ -24,13 +24,13 @@
 				  <a-button icon="upload"> 上传 <a-icon type="down" /> </a-button>
 				</a-dropdown>
 				<a-button icon="folder-add" @click="nameOperate.isCreate = nameOperate.visible = true">文件夹</a-button>
-				<a-button-group>
-				  <a-button icon="share-alt">分享</a-button>
-				  <a-button icon="download">下载</a-button>
-				  <a-button icon="edit">重命名</a-button>
-				  <a-button icon="copy">复制到</a-button>
-				  <a-button icon="arrow-right">移动到</a-button>
-				  <a-button icon="delete">删除</a-button>
+				<a-button-group v-if="selectedRow.length > 0">
+					<a-button icon="share-alt">分享</a-button>
+					<a-button icon="download">下载</a-button>
+					<a-button icon="edit" @click="nameOperate.isCreate = false,nameOperate.visible = true,nameOperate.source = cacheRecord.name">重命名</a-button>
+					<a-button icon="copy" @click="moveOrCopyHandle('copy')">复制到</a-button>
+					<a-button icon="arrow-right" @click="moveOrCopyHandle('move')">移动到</a-button>
+					<a-button icon="delete" @click="handleDelete">删除</a-button>
 				</a-button-group>
 			</div>
 			<div></div>
@@ -103,7 +103,7 @@
 		</AttachmentPreview>
 		
 		<v-contextmenu ref="contextmenu">
-			<v-contextmenu-item @click="rowDblclick(cacheRecord)">打开</v-contextmenu-item>
+			<v-contextmenu-item @click="rowDblclick(cacheRecord)">{{ undefined !== cacheRecord && cacheRecord.isDirectory ? '打开' : '预览'}}</v-contextmenu-item>
 			<v-contextmenu-item>下载</v-contextmenu-item>
 			<v-contextmenu-item divider></v-contextmenu-item>
 			<v-contextmenu-item>分享</v-contextmenu-item>
@@ -285,9 +285,17 @@ export default {
 			for (var i = 0; i < this.selectedRow.length; i++) {
 				paths.push(this.paths.join('/') + '/' + this.localDataSource[this.selectedRow[i]].name)
 			}
-			fileManager.remove({ 'paths': paths.toString() }).then(res => {
-				this.getDataSource()
-			})
+			const that = this
+			this.$confirm({
+        title: '确认删除',
+        content: '确认要把所选文件放入回收站吗？',
+        onOk() {
+          fileManager.remove({ 'paths': paths.toString() }).then(res => {
+          	that.getDataSource()
+          })
+        },
+        onCancel() {}
+      })
 		},
 		moveOrCopyClick(selectedKeys, info) {
 			console.log(selectedKeys)
