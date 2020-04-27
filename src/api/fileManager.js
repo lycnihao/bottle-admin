@@ -1,13 +1,23 @@
+import Vue from 'vue'
 import { axios } from '@/utils/request'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
+
 
 const bottleUrl = 'http://localhost:8080/'
 
 const baseUrl = bottleUrl + 'api/admin/fileManager'
 
+const uploadUrl = bottleUrl + 'api/admin/uploader'
+
 const fileManagerApi = {}
 
 fileManagerApi.getAttrUrl = () => {
 	return bottleUrl + '/upload/'
+}
+
+fileManagerApi.fileChunk = () => {
+	const token = Vue.ls.get(ACCESS_TOKEN)
+	return uploadUrl + '/chunk?API-Authorization=' + token
 }
 
 fileManagerApi.query = params => {
@@ -62,6 +72,14 @@ fileManagerApi.remove = params => {
   return axios({
     url: `${baseUrl}/remove`,
     params: params,
+    method: 'post'
+  })
+}
+
+fileManagerApi.mergeFile = (params) => {
+  return axios({
+    url: `${uploadUrl}/mergeFile`,
+    data: params, 
     method: 'post'
   })
 }

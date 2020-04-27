@@ -188,9 +188,6 @@ export default {
 		},
 		handleMenuClick(e) {
 			if (e.key === '1') {
-				this.$emit('openUploader', {
-				    id: '1111'
-				})
 				this.uploadVisible = true
 				this.uploadDirectory = false
 			} else {
