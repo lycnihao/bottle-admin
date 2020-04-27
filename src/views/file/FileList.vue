@@ -69,6 +69,7 @@
 		  :footer="null"
 		  destroyOnClose
 		>
+			<!-- <Upload :uploadHandler="uploadHandler" :attachOption="{path: paths.join('/')}" :directory="uploadDirectory" :multiple="true"></Upload> -->
 			<Upload :uploadHandler="uploadHandler" :attachOption="{path: paths.join('/')}" :directory="uploadDirectory" :multiple="true"></Upload>
 		</a-modal>
 		
@@ -120,7 +121,7 @@
 
 <script>
 import { mixin, mixinDevice } from '@/utils/mixin.js'
-import Upload from '@/components/Upload/Upload'
+import Upload from '@/components/Upload/Uploader'
 import fileManager from '@/api/fileManager'
 import AttachmentPreview from '@/views/file/AttachmentPreview'
 import FileOperate from '@/views/file/fileOperate'
@@ -187,6 +188,9 @@ export default {
 		},
 		handleMenuClick(e) {
 			if (e.key === '1') {
+				this.$emit('openUploader', {
+				    id: '1111'
+				})
 				this.uploadVisible = true
 				this.uploadDirectory = false
 			} else {

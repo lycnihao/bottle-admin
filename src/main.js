@@ -18,11 +18,14 @@ import './components/global.less'
 import contentmenu from 'v-contextmenu/src'
 import 'v-contextmenu/dist/index.css'
 
+import uploader from 'vue-simple-uploader'
+
 Vue.config.productionTip = false
 
 // mount axios Vue.$http and this.$http
 Vue.use(VueAxios)
 Vue.use(contentmenu)
+Vue.use(uploader)
 
 new Vue({
   router,
