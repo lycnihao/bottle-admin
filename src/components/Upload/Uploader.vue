@@ -109,7 +109,7 @@ export default {
       console.log('file complete', arguments)
       const file = arguments[0].file
 			fileManager.mergeFile(Object.assign({
-        filename: file.name,
+        fileName: file.name,
         identifier: arguments[0].uniqueIdentifier,
         totalSize: file.size,
         type: file.type
