@@ -65,6 +65,10 @@ export default {
 		'd-player': VueDPlayer
 	},
 	props: {
+	  attachments: {
+		type: Array,
+		required: true
+	  },
 	  attachment: {
 	    type: Object,
 	    required: true
@@ -117,10 +121,20 @@ export default {
 	methods: {
 		showViewer(that, photoPreviewVisible) {
 			if (photoPreviewVisible) {
-				var image = new Image()
-				image.src = this.attachment.path
-				var viewer = new Viewer(image, {
-					navbar: false,
+				const images = document.createElement('div')
+				for (var file of this.attachments) {
+					if (RegExp(/image/).exec(file.mediaType)) {
+						 var image = document.createElement('img')
+						 image.setAttribute('src', this.attachment.path + file.name)
+						 image.setAttribute('name', file.name)  
+						 images.appendChild(image)
+					}
+				}
+				/* var image = new Image()
+				image.src = this.attachment.absolutePath */
+				var viewer = new Viewer(images, {
+					url: this.attachment.absolutePath,
+					navbar: true,
 					hidden() {
 						viewer.destroy()
 						that.photoPreviewVisible = !photoPreviewVisible
@@ -170,17 +184,17 @@ export default {
 		      this.handlePreviewVisible(false, true, false, false)
 		
 		      // 去除视频地址后面的参数
-		      var lastIndex = attachment.path.lastIndexOf('?')
-		      var path = attachment.path.substring(0, lastIndex === -1 ? attachment.path.lenght : lastIndex)
+		      var lastIndex = attachment.absolutePath.lastIndexOf('?')
+		      var path = attachment.absolutePath.substring(0, lastIndex === -1 ? attachment.absolutePath.lenght : lastIndex)
 		      // 设置视频地址
-		      this.$set(this.videoOptions.video, 'url', path)
+		      this.$set(this.videoOptions.video, 'url', encodeURI(path))
 		      /* this.$log.debug('video url', path) */
 					console.log('video url:' + path)
 		    } else if (prefix === 'image') {
 		      this.handlePreviewVisible(true, false, false, false)
 		    } else if (prefix === 'audio') {
 		      this.handlePreviewVisible(false, false, true, false)
-					this.$set(this.audioOptions, 'url', attachment.path)
+					this.$set(this.audioOptions, 'url', attachment.absolutePath)
 		    } else {
 		      this.handlePreviewVisible(false, false, false, true)
 		    }
@@ -190,8 +204,14 @@ export default {
 		  // 为了更好的使vue监听到组件变化及时刷新,方式修改组件后需要刷新才能显示一下部分
 		  this.$set(this, 'photoPreviewVisible', photo)
 		  this.$set(this, 'videoPreviewVisible', video)
-			this.$set(this, 'audioPreviewVisible', audio)
-		  this.$set(this, 'nonsupportPreviewVisible', nonsupport)
+		  this.$set(this, 'audioPreviewVisible', audio)
+		  if (nonsupport) {
+			  this.$notification['info']({
+				message: '系统提示',
+				description:
+				  '当前文件格式不支持预览'
+			  })
+		  }
 		}
 	}
 }

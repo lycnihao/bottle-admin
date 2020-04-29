@@ -145,7 +145,7 @@ export default {
 			
 			.uploader-btn {
 				display: block;
-				padding: 14px 0;
+				padding: 16px 0;
 				color: rgba(0,0,0,.85);
 				border: none;
 			}

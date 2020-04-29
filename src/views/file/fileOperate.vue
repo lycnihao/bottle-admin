@@ -27,13 +27,6 @@ export default {
 		  type: Array,
 		  required: false,
 			default: function () { return [] }
-		},
-		callback: {
-		  type: Function,
-		  required: false,
-			default: function () { 
-				console.log('enterback')
-			}
 		}
 	},
 	data () {
@@ -55,14 +48,21 @@ export default {
 			if (this.nameOperate.isCreate) {
 				fileManager.createFolder({ 'path': path + this.nameOperate.value }).then(res => {
 					console.log(res)
+					this.$emit('callback', res)
+				}).catch(e => {
+					console.log(e.response)
+					this.$notification.error({ message: '错误提示', description: e.response.data.message })
 				})
 			} else {
 				fileManager.rename({ 'path': path + this.nameOperate.source, 'newPath': path + this.nameOperate.value }).then(res => {
 					console.log(res)
+					this.$emit('callback', res)
+				}).catch(e => {
+					console.log(e.response)
+					this.$notification.error({ message: '错误提示', description: e.response.data.message })
 				})
 			}
 			this.nameOperate.loading = this.nameOperate.visible = false
-			this.callback()
 		}
 	}
 }

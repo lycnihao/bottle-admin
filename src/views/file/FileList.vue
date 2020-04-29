@@ -26,7 +26,7 @@
 				<a-button icon="folder-add" @click="nameOperate.isCreate = nameOperate.visible = true">文件夹</a-button>
 				<a-button-group v-if="selectedRow.length > 0">
 					<a-button icon="share-alt">分享</a-button>
-					<a-button icon="download">下载</a-button>
+					<a-button icon="download" @click="download">下载</a-button>
 					<a-button icon="edit" @click="nameOperate.isCreate = false,nameOperate.visible = true,nameOperate.source = cacheRecord.name">重命名</a-button>
 					<a-button icon="copy" @click="moveOrCopyHandle('copy')">复制到</a-button>
 					<a-button icon="arrow-right" @click="moveOrCopyHandle('move')">移动到</a-button>
@@ -65,6 +65,7 @@
 		
 		<a-modal
 		  title="上传附件"
+		  :width="620"
 		  v-model="uploadVisible"
 		  :footer="null"
 		  destroyOnClose
@@ -100,11 +101,12 @@
 			ref="attachmentPreview"
 			v-if="selectAttachment"
 			:attachment="selectAttachment"
+			:attachments="localDataSource"
 			>
 		</AttachmentPreview>
 		
 		<v-contextmenu ref="contextmenu">
-			<v-contextmenu-item @click="rowDblclick(cacheRecord)">{{ undefined !== cacheRecord && cacheRecord.isDirectory ? '打开' : '预览'}}</v-contextmenu-item>
+			<v-contextmenu-item @click="rowDblclick(cacheRecord)">{{ undefined !== cacheRecord && cacheRecord.isDirectory ? '打开' : '预览' }}</v-contextmenu-item>
 			<v-contextmenu-item>下载</v-contextmenu-item>
 			<v-contextmenu-item divider></v-contextmenu-item>
 			<v-contextmenu-item>分享</v-contextmenu-item>
@@ -179,6 +181,11 @@ export default {
     }
   },
   methods: {
+		download() {
+			console.log(this.cacheRecord)
+			console.log(fileManager.getAttrUrl() + this.paths.join('/') + '/' + this.selectAttachment.name + '?attname=' + this.selectAttachment.name)
+			/* window.location.href = fileManager.getAttrUrl() + this.paths.join('/') + '/' + '?attname=' + this.selectAttachment.name */
+		},
 		moveOrCopyHandle(type) {
 			this.moveOrCopyType = type
 			fileManager.folderNode().then(res => {
@@ -228,10 +235,7 @@ export default {
 				this.loading = false
 			}).catch(e => {
 				this.loading = false
-				this.$notification.error({
-					message: '错误提示',
-					description: e.toString()
-				})
+				this.$notification.error({ message: '错误提示', description: e.response.data.message })
 			})
 		},
 		rowClick (record, index, e) {
@@ -264,13 +268,14 @@ export default {
 			}
 		},
 		rowDblclick (record) {
-			const attrPath = this.paths.join('/') + '/' + record.name
+			const strPath = this.paths.join('/') + '/'
 			if (record.isDirectory !== undefined & record.isDirectory) {
-				this.getDataSource(attrPath)
+				this.getDataSource(strPath + record.name)
 				this.directoryHistory.splice(this.directoryCursor + 1, this.directoryHistory.length - this.directoryCursor, this.queryParam.path)
 				this.directoryCursor = this.directoryHistory.length - 1
 			} else {
-				record.path = fileManager.getAttrUrl() + attrPath
+				record.path = fileManager.getAttrUrl() + strPath
+				record.absolutePath = fileManager.getAttrUrl() + strPath + record.name
 				this.selectAttachment = Object.assign({}, record)
 			}
 		},
@@ -288,14 +293,14 @@ export default {
 			}
 			const that = this
 			this.$confirm({
-        title: '确认删除',
-        content: '确认要把所选文件放入回收站吗？',
-        onOk() {
-          fileManager.remove({ 'paths': paths.toString() }).then(res => {
-          	that.getDataSource()
-          })
-        },
-        onCancel() {}
+			title: '确认删除',
+			content: '确认要把所选文件放入回收站吗？',
+			onOk() {
+			  fileManager.remove({ 'paths': paths.toString() }).then(res => {
+				that.getDataSource()
+			  })
+			},
+			onCancel() {}
       })
 		},
 		moveOrCopyClick(selectedKeys, info) {
@@ -318,12 +323,12 @@ export default {
 				fileManager.move({ 'paths': paths.toString(), 'newPath': this.moveOrCopyKey }).then(res => {
 					this.getDataSource()
 					this.moveOrCopyVisible = false
-				})
+				}).catch(e => { this.$notification.error({ message: '错误提示', description: e.response.data.message }) })
 			} else {
 				fileManager.copy({ 'paths': paths.toString(), 'newPath': this.moveOrCopyKey }).then(res => {
 					this.getDataSource()
 					this.moveOrCopyVisible = false
-				})
+				}).catch(e => { this.$notification.error({ message: '错误提示', description: e.response.data.message }) })
 			}
 		},
 		// 面包屑导航 点击事件
