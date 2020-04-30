@@ -41,11 +41,6 @@ export const constantRouterMap = [
         component: () => import('@/views/user/Login')
       },
       {
-        path: 'register',
-        name: 'register',
-        component: () => import('@/views/user/Register')
-      },
-      {
         path: 'register-result',
         name: 'registerResult',
         component: () => import('@/views/user/RegisterResult')
@@ -59,7 +54,7 @@ export const constantRouterMap = [
   },
 	{
 	  path: '/install',
-		name: 'installation',
+		name: 'Install',
 	  component: () => import('@/views/system/Installation')
 	},
 

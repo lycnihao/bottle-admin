@@ -108,12 +108,13 @@ export default {
     handleFileComplete() {
       console.log('file complete', arguments)
       const file = arguments[0].file
-			fileManager.mergeFile(Object.assign({
-        fileName: file.name,
-        identifier: arguments[0].uniqueIdentifier,
-        totalSize: file.size,
-        type: file.type
-      })).then(function (response) {
+		fileManager.mergeFile(Object.assign({
+			fileName: file.name,
+			identifier: arguments[0].uniqueIdentifier,
+			totalSize: file.size,
+			type: file.type,
+			path: this.attachOption.path
+		})).then(function (response) {
         console.log(response)
       }).catch(function (error) {
         console.log(error)

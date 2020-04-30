@@ -21,6 +21,7 @@ module.exports = {
 	"no-multiple-empty-lines":"off",
 	"space-before-function-paren":"off",
 	"vue/html-indent":"off",
+	"no-callback-literal":0,
     'vue/max-attributes-per-line': [
       2,
       {

@@ -10,7 +10,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', 'register', 'registerResult',	'installation'] // no redirect whitelist
+const whiteList = ['login', 'Install', 'registerResult',	'installation'] // no redirect whitelist
 const defaultRoutePath = '/admin/disk'
 
 router.beforeEach((to, from, next) => {

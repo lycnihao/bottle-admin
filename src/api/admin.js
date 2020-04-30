@@ -1,6 +1,6 @@
 import { axios } from '@/utils/request'
 
-const baseUrl = '/api/admin'
+const baseUrl = 'http://localhost:8080/api/admin'
 
 const adminApi = {}
 

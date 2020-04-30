@@ -182,7 +182,6 @@ export default {
   },
   methods: {
 		download() {
-			console.log(this.cacheRecord)
 			console.log(fileManager.getAttrUrl() + this.paths.join('/') + '/' + this.selectAttachment.name + '?attname=' + this.selectAttachment.name)
 			/* window.location.href = fileManager.getAttrUrl() + this.paths.join('/') + '/' + '?attname=' + this.selectAttachment.name */
 		},
