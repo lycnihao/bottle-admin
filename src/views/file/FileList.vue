@@ -332,7 +332,8 @@ export default {
 		},
 		// 面包屑导航 点击事件
 		handleBreadcrumb(i) {
-			this.getDataSource(this.paths.slice(0, i + 1).join('/'))
+			this.queryParam.path = this.paths.slice(0, i + 1).join('/')
+			this.getDataSource()
 		}
   },
 	watch: {

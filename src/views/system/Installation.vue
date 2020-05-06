@@ -24,7 +24,7 @@
               </a-step>
               <a-step title="系统信息">
               </a-step>
-              <a-step title="数据导入">
+              <a-step title="安装完成">
               </a-step>
             </a-steps>
             <a-divider dashed />
@@ -37,6 +37,7 @@
             >
               <a-form-item class="animated fadeInUp">
                 <a-input
+					v-model="installation.username"
                   placeholder="用户名"
                   v-decorator="[
                     'username',
@@ -55,6 +56,7 @@
                 :style="{'animation-delay': '0.1s'}"
               >
                 <a-input
+				  v-model="installation.nickname"
                   placeholder="用户昵称"
                 >
                   <a-icon
@@ -69,6 +71,7 @@
                 :style="{'animation-delay': '0.2s'}"
               >
                 <a-input
+				  v-model="installation.email"
                   placeholder="用户邮箱"
                   v-decorator="[
                     'email',
@@ -87,6 +90,7 @@
                 :style="{'animation-delay': '0.3s'}"
               >
                 <a-input
+				  v-model="installation.password"
                   type="password"
                   placeholder="用户密码（8-100位）"
                   v-decorator="[
@@ -106,6 +110,7 @@
                 :style="{'animation-delay': '0.4s'}"
               >
                 <a-input
+				  v-model="installation.confirmPassword"
                   type="password"
                   placeholder="确认密码"
                   v-decorator="[
@@ -124,14 +129,14 @@
 
             <!-- 系统设置 -->
 
-            <!-- <a-form
+            <a-form
               layout="horizontal"
               v-show="stepCurrent == 1"
             >
               <a-form-item class="animated fadeInUp">
                 <a-input
                   v-model="installation.url"
-                  placeholder="博客地址"
+                  placeholder="网站地址"
                 >
                   <a-icon
                     slot="prefix"
@@ -146,7 +151,7 @@
               >
                 <a-input
                   v-model="installation.title"
-                  placeholder="博客标题"
+                  placeholder="网站标题"
                 >
                   <a-icon
                     slot="prefix"
@@ -155,25 +160,7 @@
                   />
                 </a-input>
               </a-form-item>
-            </a-form> -->
-
-            <!-- 数据迁移 -->
-            <!-- <div v-show="stepCurrent == 2">
-              <a-alert
-                style="margin-bottom: 1rem"
-                message="如果有数据导入需求，请点击并选择之前导出的文件。需要注意的是，并不是所有数据都会导入，该初始化表单的数据会覆盖你导入的数据。"
-                type="info"
-              />
-              <FilePondUpload
-                ref="upload"
-                name="file"
-                accept="application/json"
-                label="拖拽或点击选择数据文件，请确认是否为 Halo 后台导出的文件。"
-                :multiple="false"
-                :uploadHandler="handleMigrationUpload"
-                :loadOptions="false"
-              ></FilePondUpload>
-            </div> -->
+            </a-form>
 
             <a-row
               class="install-action"
@@ -190,12 +177,12 @@
                 >上一步</a-button>
                 <a-button
                   type="primary"
-                  v-if="stepCurrent != 2"
+                  v-if="stepCurrent != 1"
                   @click="handleNextStep"
                 >下一步</a-button>
               </div>
               <a-button
-                v-if="stepCurrent == 2"
+                v-if="stepCurrent == 1"
                 type="primary"
                 icon="upload"
                 @click="handleInstall"
@@ -211,14 +198,12 @@
 
 <script>
 import adminApi from '@/api/admin'
-import migrateApi from '@/api/migrate'
 
 export default {
   data() {
     return {
       installation: {},
       stepCurrent: 0,
-      migrationData: null,
       bottleForm: this.$form.createForm(this),
       installing: false
     }
@@ -229,7 +214,7 @@ export default {
   },
   methods: {
     handleValidateConfirmPassword(rule, value, callback) {
-	  const form = this.form
+	  const form = this.bottleForm
       if (value && value !== form.getFieldValue('password')) {
         // eslint-disable-next-line standard/no-callback-literal
         callback('确认密码和密码不匹配')
@@ -252,27 +237,19 @@ export default {
     handleNextStep(e) {
       e.preventDefault()
       this.bottleForm.validateFields((error, values) => {
-        this.$log.debug('error', error)
-        this.$log.debug('Received values of form: ', values)
+		console.log('error', error)
+		console.log('Received values of form: ', values)
         if (error != null) {
         } else {
           this.stepCurrent++
         }
       })
     },
-    handleMigrationUpload(data) {
-      this.$log.debug('Selected data', data)
-      this.migrationData = data
-      return new Promise((resolve, reject) => {
-        this.$log.debug('Handle uploading')
-        resolve()
-      })
-    },
     install() {
       adminApi
         .install(this.installation)
         .then(response => {
-          this.$log.debug('Installation response', response)
+		  console.log('Installation response', response)
           this.$message.success('安装成功！')
           setTimeout(() => {
             this.$router.push({ name: 'Login' })
@@ -286,29 +263,15 @@ export default {
       const password = this.installation.password
       const confirmPassword = this.installation.confirmPassword
 
-      this.$log.debug('Password', password)
-      this.$log.debug('Confirm password', confirmPassword)
+	  console.log('password', password)
+	  console.log('Confirm password', confirmPassword)
 
       if (password !== confirmPassword) {
         this.$message.error('确认密码和密码不匹配')
         return
       }
       this.installing = true
-      if (this.migrationData) {
-        const hide = this.$message.loading('数据导入中...', 0)
-        migrateApi
-          .migrate(this.migrationData)
-          .then(response => {
-            this.$log.debug('Migrated successfullly')
-            this.$message.success('数据导入成功！')
-            this.install()
-          })
-          .finally(() => {
-            hide()
-          })
-      } else {
-        this.install()
-      }
+	  this.install()
     }
   }
 }
