@@ -1,8 +1,10 @@
 import { axios } from '@/utils/request'
 
+const baseUrl = '/api/admin/'
+
 export function login (parameter) {
   return axios({
-    url: 'http://localhost:8080/api/admin/login',
+    url: `${baseUrl}/login`,
     method: 'post',
     data: parameter
   })
@@ -10,7 +12,7 @@ export function login (parameter) {
 
 export function getInfo () {
   return axios({
-		url: 'http://localhost:8080/api/admin/info',
+	url: `${baseUrl}/info`,
     /* url: '/user/info', */
     method: 'get',
     headers: {

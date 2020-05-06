@@ -3,16 +3,15 @@ import { axios } from '@/utils/request'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 
-const bottleUrl = 'http://localhost:8080/'
 
-const baseUrl = bottleUrl + 'api/admin/fileManager'
+const baseUrl = '/api/admin/fileManager'
 
-const uploadUrl = bottleUrl + 'api/admin/uploader'
+const uploadUrl = '/api/admin/uploader'
 
 const fileManagerApi = {}
 
 fileManagerApi.getAttrUrl = () => {
-	return bottleUrl + '/upload/'
+	return '/upload/'
 }
 
 fileManagerApi.fileChunk = () => {
