@@ -53,10 +53,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import 'vue-dplayer/dist/vue-dplayer.css'
 import VueDPlayer from 'vue-dplayer'
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'viewerjs'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 
 export default {
@@ -81,6 +83,7 @@ export default {
 	},
 	data () {
 		return {
+			token: Vue.ls.get(ACCESS_TOKEN),
 			photo: {},
 			previewLoading: true,
 			photoPreviewVisible: false,
@@ -125,7 +128,7 @@ export default {
 				for (var file of this.attachments) {
 					if (RegExp(/image/).exec(file.mediaType)) {
 						 var image = document.createElement('img')
-						 image.setAttribute('src', 'http://localhost:8080/' + this.attachment.path + file.name)
+						 image.setAttribute('src', 'http://localhost:8080/' + this.attachment.path + file.name + '?API-Authorization=' + this.token)
 						 /* image.setAttribute('src', this.attachment.path + file.name) */
 						 image.setAttribute('name', file.name)  
 						 images.appendChild(image)
@@ -188,7 +191,7 @@ export default {
 		      var lastIndex = attachment.absolutePath.lastIndexOf('?')
 		      var path = attachment.absolutePath.substring(0, lastIndex === -1 ? attachment.absolutePath.lenght : lastIndex)
 		      // 设置视频地址
-			  this.$set(this.videoOptions.video, 'url', encodeURI('http://localhost:8080/' + path))
+			  this.$set(this.videoOptions.video, 'url', encodeURI('http://localhost:8080/' + path + '?API-Authorization=' + this.token))
 		      /* this.$set(this.videoOptions.video, 'url', encodeURI(path)) */
 		      /* this.$log.debug('video url', path) */
 					console.log('video url:' + path)

@@ -25,7 +25,7 @@
 				</a-dropdown>
 				<a-button icon="folder-add" @click="nameOperate.isCreate = nameOperate.visible = true">文件夹</a-button>
 				<a-button-group v-if="selectedRow.length > 0">
-					<a-button icon="share-alt">分享</a-button>
+					<a-button icon="share-alt" @click="shareVisible = true">分享</a-button>
 					<a-button icon="download" @click="download">下载</a-button>
 					<a-button icon="edit" @click="nameOperate.isCreate = false,nameOperate.visible = true,nameOperate.source = cacheRecord.name">重命名</a-button>
 					<a-button icon="copy" @click="moveOrCopyHandle('copy')">复制到</a-button>
@@ -89,6 +89,43 @@
 			</a-directory-tree>
 		</a-modal>
 		
+		<a-modal
+		title="分享文件"
+		:visible="shareVisible"
+		@cancel="shareVisible = false"
+		>
+			<a-form :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+				<a-form-item label="分享形式">
+				  <a-radio-group v-model="share.encryption">
+					<a-radio :value="true">
+					  有提取码
+					</a-radio>
+					<a-radio :value="false">
+					  公开分享
+					</a-radio>
+				  </a-radio-group>
+				</a-form-item>
+				
+				<a-form-item label="有效期">
+				 <a-select :value="share.expiredType" style="width: 120px">
+				 	<a-select-option :value="0">永久</a-select-option>
+				 	<a-select-option :value="7">7天</a-select-option>
+				 	<a-select-option :value="1">1天</a-select-option>
+				 </a-select>
+				</a-form-item>
+				
+			</a-form>
+			
+			<template slot="footer">
+				<a-button key="back" @click="shareVisible = false">
+				  取消
+				</a-button>
+				<a-button key="submit" type="primary" @click="shareHandel">
+				  创建链接
+				</a-button>
+			</template>
+		</a-modal>
+		
 		<FileOperate
 			ref="fileOperate"
 			:paths="paths"
@@ -109,7 +146,7 @@
 			<v-contextmenu-item @click="rowDblclick(cacheRecord)">{{ undefined !== cacheRecord && cacheRecord.isDirectory ? '打开' : '预览' }}</v-contextmenu-item>
 			<v-contextmenu-item>下载</v-contextmenu-item>
 			<v-contextmenu-item divider></v-contextmenu-item>
-			<v-contextmenu-item>分享</v-contextmenu-item>
+			<v-contextmenu-item @click="shareVisible = true">分享</v-contextmenu-item>
 			<v-contextmenu-item divider></v-contextmenu-item>
 			<v-contextmenu-item @click="moveOrCopyHandle('copy')">复制到</v-contextmenu-item>
 			<v-contextmenu-item @click="moveOrCopyHandle('move')">移动到</v-contextmenu-item>
@@ -125,6 +162,7 @@
 import { mixin, mixinDevice } from '@/utils/mixin.js'
 import Upload from '@/components/Upload/Uploader'
 import fileManager from '@/api/fileManager'
+import shares from '@/api/shares'
 import AttachmentPreview from '@/views/file/AttachmentPreview'
 import FileOperate from '@/views/file/fileOperate'
 
@@ -161,6 +199,8 @@ export default {
 			moveOrCopyVisible: false,
 			moveOrCopyType: '',
 			moveOrCopyKey: '',
+			shareVisible: false,
+			share: { encryption: true, expiredType: 7 },
 			uploadHandler: fileManager.upload,
 			fileIcon: stringType => {
 				if (stringType !== undefined && stringType !== null) {
@@ -181,6 +221,12 @@ export default {
     }
   },
   methods: {
+		shareHandel() {
+			this.share.path = '/' + this.queryParam.path + '/' + this.cacheRecord.name
+			shares.sharesAdd(Object.assign(this.share)).then(res => {
+			console.log(res)
+			})
+		},
 		download() {
 			console.log(fileManager.getAttrUrl() + this.paths.join('/') + '/' + this.selectAttachment.name + '?attname=' + this.selectAttachment.name)
 			/* window.location.href = fileManager.getAttrUrl() + this.paths.join('/') + '/' + '?attname=' + this.selectAttachment.name */
@@ -238,6 +284,7 @@ export default {
 			})
 		},
 		rowClick (record, index, e) {
+			this.cacheRecord = record
 			// 阻止文本被选择
 			window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty()
 			if (e.ctrlKey) {

@@ -15,8 +15,14 @@ export const asyncRouterMap = [
         path: '/admin/disk',
         name: 'FileList',
         component: () => import('@/views/file/FileList'),
-        meta: { title: '文件', keepAlive: true, icon: bxAnaalyse }
-      }
+        meta: { title: '全部文件', keepAlive: true, icon: bxAnaalyse }
+      },
+			{
+			  path: '/admin/share',
+			  name: 'Share',
+			  component: () => import('@/views/file/Share'),
+			  meta: { title: '我的分享', keepAlive: true, icon: 'share-alt' }
+			}
     ]
   },
   {

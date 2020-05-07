@@ -1,6 +1,6 @@
 import { axios } from '@/utils/request'
 
-const baseUrl = '/api/admin/'
+const baseUrl = '/api/admin'
 
 export function login (parameter) {
   return axios({
@@ -23,7 +23,7 @@ export function getInfo () {
 
 export function logout () {
   return axios({
-    url: '/auth/logout',
+    url: `${baseUrl}/logout`,
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
