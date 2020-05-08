@@ -15,7 +15,8 @@ sharesApi.sharesAdd = data => {
   return axios({
     url: `${baseUrl}/shares`,
 	data: data,
-    method: 'put'
+    method: 'put',
+	timeout: 600000
   })
 }
 

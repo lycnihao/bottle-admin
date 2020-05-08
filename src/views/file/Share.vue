@@ -15,12 +15,12 @@
       :columns="columns"
       :data-source="data"
     >
-	<template v-slot:action>
+	<template slot="action" slot-scope="text, record">
 		<a-tooltip placement="top">
         <template slot="title">
-          <span>http://www.bottle.run</span>
+          <span v-html="'http://bottle.run/s/' + record.fileKey"></span>
         </template>
-         <a href="javascript:;">复制</a>
+         <a href="javascript:;" @click="copy()">复制</a>
       </a-tooltip>
 	 
 	</template>
@@ -45,7 +45,7 @@ const columns = [
     dataIndex: 'expiredTime'
   },
    {
-    title: 'Action',
+    title: '操作',
     key: 'action',
     scopedSlots: { customRender: 'action' }
   }
@@ -66,6 +66,10 @@ export default {
     }
   },
   methods: {
+	copy() {
+		console.log('111')
+		document.execCommand('copy')
+	},
     start() {
       this.loading = true
       // ajax request after empty completing
@@ -79,7 +83,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     }
   },
-  created() {
+  mounted() {
 	shares.listAll().then(res => {
 		this.data = res
 	})

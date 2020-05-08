@@ -120,7 +120,7 @@
 				<a-button key="back" @click="shareVisible = false">
 				  取消
 				</a-button>
-				<a-button key="submit" type="primary" @click="shareHandel">
+				<a-button key="submit" type="primary" @click="shareHandel" :loading="shareLoading">
 				  创建链接
 				</a-button>
 			</template>
@@ -200,6 +200,7 @@ export default {
 			moveOrCopyType: '',
 			moveOrCopyKey: '',
 			shareVisible: false,
+			shareLoading: false,
 			share: { encryption: true, expiredType: 7 },
 			uploadHandler: fileManager.upload,
 			fileIcon: stringType => {
@@ -222,9 +223,10 @@ export default {
   },
   methods: {
 		shareHandel() {
+			this.shareLoading = true
 			this.share.path = '/' + this.queryParam.path + '/' + this.cacheRecord.name
 			shares.sharesAdd(Object.assign(this.share)).then(res => {
-			console.log(res)
+			this.shareVisible = this.shareLoading = false
 			})
 		},
 		download() {
