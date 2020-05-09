@@ -20,9 +20,10 @@
         <template slot="title">
           <span v-html="'http://bottle.run/s/' + record.fileKey"></span>
         </template>
-         <a href="javascript:;" @click="copy()">复制</a>
-      </a-tooltip>
-	 
+         <a href="javascript:;" @click="copy($event)">复制
+		 <span class="copy-bar" v-html="'http://bottle.run/s/' + record.fileKey"></span>
+		 </a>
+		</a-tooltip>
 	</template>
 	</a-table>
   </a-card>
@@ -66,9 +67,18 @@ export default {
     }
   },
   methods: {
-	copy() {
-		console.log('111')
-		document.execCommand('copy')
+	copy(event) {
+		// 创建range对象
+		var range = document.createRange()
+		// 传入需要选中的节点
+		range.selectNodeContents(event.target.querySelector('span'))
+		var selection = document.getSelection()
+		// 清空选中的区域
+		selection.removeAllRanges()
+		// 添加选中区域
+		selection.addRange(range)
+		document.execCommand('Copy')
+		this.$message.success('分享链接已复制')
 	},
     start() {
       this.loading = true
@@ -92,4 +102,8 @@ export default {
 </script>
 
 <style>
+	.copy-bar {
+		z-index: -1;
+		position: absolute;
+	}
 </style>

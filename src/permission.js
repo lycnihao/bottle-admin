@@ -10,10 +10,11 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', 'Install', 'registerResult',	'installation'] // no redirect whitelist
+const whiteList = ['login', 'Install', 'registerResult', 'installation', 'share_v'] // no redirect whitelist
 const defaultRoutePath = '/admin/disk'
 
 router.beforeEach((to, from, next) => {
+	console.log(to)
   NProgress.start() // start progress bar
   to.meta && (typeof to.meta.title !== 'undefined' && setDocumentTitle(`${to.meta.title} - ${domTitle}`))
   if (Vue.ls.get(ACCESS_TOKEN)) {

@@ -4,6 +4,13 @@ const baseUrl = '/api/admin'
 
 const sharesApi = {}
 
+sharesApi.query = key => {
+	return axios({
+	  url: `${baseUrl}/shares/key/${key}`,
+	  method: 'get'
+	})
+}
+
 sharesApi.listAll = () => {
 	return axios({
 	  url: `${baseUrl}/shares`,

@@ -63,7 +63,11 @@ export const constantRouterMap = [
 		name: 'Install',
 	  component: () => import('@/views/system/Installation')
 	},
-
+	{
+		  path: '/s/:key',
+		  name: 'share_v',
+		  component: () => import('@/views/file/ShareView')
+		},
   {
     path: '/404',
     component: () => import('@/views/exception/404')
