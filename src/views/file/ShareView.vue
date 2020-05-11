@@ -15,12 +15,20 @@
     </a-layout-header>
     <a-layout-content class="content">
 	  <div class="main">
-		  
+		  <div class="player" v-show="videoPreviewVisible">
+			  <d-player
+			    ref="player"
+			    :options="videoOptions"
+			    v-show="videoPreviewVisible"
+			    style="width: 100%;"
+			  >
+			  </d-player>
+		  </div>
 	  </div>
-      <div class="info">
+      <!-- <div class="info">
 		  <h1>周星驰电影</h1>
         <div> {{ $route.params.key }}</div>
-      </div>
+      </div> -->
     </a-layout-content>
     <a-layout-footer :style="{ textAlign: 'center' }">
       Ant Design ©2018 Created by Ant UED
@@ -30,14 +38,35 @@
 
 <script>
 import shares from '@/api/shares'
+import 'vue-dplayer/dist/vue-dplayer.css'
+import VueDPlayer from 'vue-dplayer'
+/* import 'viewerjs/dist/viewer.css'
+import Viewer from 'viewerjs' */
 export default {
   name: 'ShareView',
 	components: {
-
+		'd-player': VueDPlayer
+	},
+	data () {
+		return {
+			attachment: {},
+			videoPreviewVisible: false,
+			videoOptions: {
+			  lang: 'zh-cn',
+			  video: {
+			    url: '',
+			    type: 'auto'
+			  }
+			}
+		}
 	},
 	mounted ()	{
 		shares.query(this.$route.params.key).then(res => {
-			console.log(res)
+			this.videoPreviewVisible = true
+			this.attachment.title = res.data.title
+			this.$refs.player.dp.switchVideo({
+				url: encodeURI('http://localhost:8080/api/admin/shares/s/' + res.data.fileKey)
+			})
 		})
 	}
 }

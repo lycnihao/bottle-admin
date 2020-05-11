@@ -192,8 +192,6 @@ export default {
 		      var path = attachment.absolutePath.substring(0, lastIndex === -1 ? attachment.absolutePath.lenght : lastIndex)
 		      // 设置视频地址
 			  this.$set(this.videoOptions.video, 'url', encodeURI('http://localhost:8080/' + path + '?API-Authorization=' + this.token))
-		      /* this.$set(this.videoOptions.video, 'url', encodeURI(path)) */
-		      /* this.$log.debug('video url', path) */
 					console.log('video url:' + path)
 		    } else if (prefix === 'image') {
 		      this.handlePreviewVisible(true, false, false, false)
